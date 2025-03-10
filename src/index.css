@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-900 text-white;
+  }
+}
+
+@layer components {
+  .card {
+    @apply p-6 rounded-xl bg-gray-800/50 backdrop-blur-xl border border-purple-500/10;
+  }
+
+  .hero-button {
+    @apply px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity;
+  }
+
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400;
+  }
+}
+
+@layer utilities {
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: theme('colors.gray.800');
+    border-radius: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: theme('colors.purple.500' / 60%);
+    border-radius: 8px;
+    border: 3px solid theme('colors.gray.800');
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.purple.400' / 80%);
+  }
+  
+  /* Firefox */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.purple.500' / 60%) theme('colors.gray.800');
+  }
+  
+  /* Web3风格的发光效果 */
+  .glow {
+    box-shadow: 0 0 20px theme('colors.purple.500' / 20%),
+                0 0 40px theme('colors.purple.500' / 10%);
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 25px theme('colors.purple.500' / 30%),
+                0 0 50px theme('colors.purple.500' / 15%);
+  }
+
+  /* 网格背景 */
+  .grid-bg {
+    background-image: 
+      linear-gradient(to right, theme('colors.purple.500' / 10%) 1px, transparent 1px),
+      linear-gradient(to bottom, theme('colors.purple.500' / 10%) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* 光晕动画 */
+  @keyframes shine {
+    from {
+      transform: translateX(-100%) skewX(-15deg);
+    }
+    to {
+      transform: translateX(200%) skewX(-15deg);
+    }
+  }
+
+  .animate-shine {
+    animation: shine 2s infinite;
+  }
+
+  /* 渐变边框 */
+  .border-gradient {
+    border: double 1px transparent;
+    background-image: linear-gradient(theme('colors.gray.900'), theme('colors.gray.900')),
+                      linear-gradient(to right, theme('colors.purple.500'), theme('colors.pink.500'));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+
+  /* 霓虹文字效果 */
+  .neon-text {
+    text-shadow: 0 0 5px theme('colors.purple.500' / 50%),
+                 0 0 10px theme('colors.purple.500' / 30%),
+                 0 0 15px theme('colors.purple.500' / 20%);
+  }
+
+  /* 毛玻璃效果 */
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg;
+    border: 1px solid theme('colors.white' / 10%);
+  }
+
+  /* 脉冲动画 */
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+    80%, 100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+
+  .animate-pulse-ring::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: theme('colors.purple.500' / 30%);
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* 数据流动画 */
+  @keyframes data-flow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-data-flow {
+    background: linear-gradient(
+      90deg,
+      theme('colors.purple.500' / 0%) 0%,
+      theme('colors.purple.500' / 50%) 50%,
+      theme('colors.purple.500' / 0%) 100%
+    );
+    background-size: 200% 100%;
+    animation: data-flow 2s linear infinite;
+  }
+
+  /* 悬浮卡片效果 */
+  .hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px theme('colors.purple.500' / 10%);
+  }
+
+  /* 3D翻转效果 */
+  .flip-card {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .flip-card-inner {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+}
