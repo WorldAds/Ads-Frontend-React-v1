@@ -15,7 +15,11 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@heroicons/react": "^2.1.1",
+    "@radix-ui/react-toast": "^1.2.6",
     "@types/echarts": "^4.9.22",
+    "axios": "^1.8.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "echarts": "^5.5.1",
@@ -25,12 +29,16 @@
     "framer-motion": "^10.18.0",
     "gsap": "^3.12.7",
     "helmet": "^7.1.0",
+    "lucide-react": "^0.483.0",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
     "postprocessing": "^6.37.1",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.1",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss-animate": "^1.0.7",
     "three": "^0.174.0"
   },
   "devDependencies": {

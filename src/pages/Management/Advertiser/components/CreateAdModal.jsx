@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { createAd } from "../../../../api/service";
+import { useToast } from "../../../../hooks/use-toast.jsx";
 
 const adTypes = [
   {
@@ -27,6 +29,8 @@ const adTypes = [
 export default function CreateAdModal({ isOpen, onClose }) {
   const [step, setStep] = useState(1);
   const [selectedType, setSelectedType] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     budget: "",
@@ -38,10 +42,44 @@ export default function CreateAdModal({ isOpen, onClose }) {
     creativeUrl: ""
   });
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit ad data:", { type: selectedType, ...formData });
-    onClose();
+    setLoading(true);
+
+    try {
+      const response = await createAd(formData);
+      
+      toast({
+        title: "Success",
+        description: "Advertisement created successfully!",
+        variant: "success",
+      });
+      
+      setTimeout(() => {
+        setFormData({
+          name: "",
+          budget: "",
+          startDate: "",
+          endDate: "",
+          targetAudience: "",
+          locations: "",
+          creativeType: "image",
+          creativeUrl: ""
+        });
+        setStep(1);
+        setSelectedType(null);
+        onClose();
+      }, 100);
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to create advertisement. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -240,6 +278,7 @@ export default function CreateAdModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleBack}
                   className="px-6 py-2 border border-gray-600 text-gray-400 rounded-lg hover:bg-gray-800 transition-colors"
+                  disabled={loading}
                 >
                   Back
                 </button>
@@ -248,6 +287,7 @@ export default function CreateAdModal({ isOpen, onClose }) {
                 type="button"
                 onClick={onClose}
                 className="px-6 py-2 border border-gray-600 text-gray-400 rounded-lg hover:bg-gray-800 transition-colors"
+                disabled={loading}
               >
                 Cancel
               </button>
@@ -256,7 +296,7 @@ export default function CreateAdModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleNext}
                   className={`hero-button ${!selectedType ? "opacity-50 cursor-not-allowed" : ""}`}
-                  disabled={!selectedType}
+                  disabled={!selectedType || loading}
                 >
                   Next
                 </button>
@@ -264,9 +304,10 @@ export default function CreateAdModal({ isOpen, onClose }) {
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="hero-button"
+                  className={`hero-button ${loading ? "opacity-50 cursor-wait" : ""}`}
+                  disabled={loading}
                 >
-                  Create Ad
+                  {loading ? "Creating..." : "Create Ad"}
                 </button>
               )}
             </div>
