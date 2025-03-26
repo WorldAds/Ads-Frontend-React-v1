@@ -59,3 +59,16 @@ export const createAd = async (adData) => {
     throw error;
   }
 };
+
+export const deleteAd = async (id) => {
+  try {
+    const response = await apiClient.delete('/api/v1/advertisements', {
+     id : id
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating advertisement:', error);
+    throw error;
+  }
+};
+
