@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { createAd } from "../../../../api/service";
+import { useToast } from "../../../../hooks/use-toast.jsx";
 
 const adTypes = [
   {
@@ -27,6 +29,8 @@ const adTypes = [
 export default function CreateAdModal({ isOpen, onClose }) {
   const [step, setStep] = useState(1);
   const [selectedType, setSelectedType] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     budget: "",
@@ -38,10 +42,52 @@ export default function CreateAdModal({ isOpen, onClose }) {
     creativeUrl: ""
   });
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit ad data:", { type: selectedType, ...formData });
-    onClose();
+    setLoading(true);
+
+    try {
+      const response = await createAd(formData);
+      
+      if (response) {
+        toast({
+          title: "Success",
+          description: "Advertisement created successfully!",
+          variant: "success",
+        });
+        
+        setTimeout(() => {
+          setFormData({
+            name: "",
+            budget: "",
+            startDate: "",
+            endDate: "",
+            targetAudience: "",
+            locations: "",
+            creativeType: "image",
+            creativeUrl: ""
+          });
+          setStep(1);
+          setSelectedType(null);
+          onClose();
+        }, 100);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to create advertisement. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to create advertisement. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -125,7 +171,8 @@ export default function CreateAdModal({ isOpen, onClose }) {
                 </div>
               ) : (
                 // Step 2: Ad Details Form
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* First row - Ad Name and Budget */}
                   <div className="grid grid-cols-2 gap-6">
                     <div>
                       <label className="block text-gray-400 mb-2">Ad Name</label>
@@ -153,6 +200,36 @@ export default function CreateAdModal({ isOpen, onClose }) {
                     </div>
                   </div>
 
+                  {/* Second row - Creative Type and Creative URL */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-400 mb-2">Creative Type</label>
+                      <select
+                        name="creativeType"
+                        value={formData.creativeType}
+                        onChange={handleChange}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
+                      >
+                        <option value="image">Image Ad</option>
+                        <option value="video">Video Ad</option>
+                        <option value="html">HTML Ad</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-2">Creative URL</label>
+                      <input
+                        type="url"
+                        name="creativeUrl"
+                        value={formData.creativeUrl}
+                        onChange={handleChange}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
+                        placeholder="Enter creative material URL"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Third row - Start Date and End Date */}
                   <div className="grid grid-cols-2 gap-6">
                     <div>
                       <label className="block text-gray-400 mb-2">Start Date</label>
@@ -178,57 +255,32 @@ export default function CreateAdModal({ isOpen, onClose }) {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-gray-400 mb-2">Target Audience</label>
-                    <input
-                      type="text"
-                      name="targetAudience"
-                      value={formData.targetAudience}
-                      onChange={handleChange}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                      placeholder="Describe target audience"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-400 mb-2">Locations</label>
-                    <input
-                      type="text"
-                      name="locations"
-                      value={formData.locations}
-                      onChange={handleChange}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                      placeholder="Enter target locations"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-400 mb-2">Creative Type</label>
-                    <select
-                      name="creativeType"
-                      value={formData.creativeType}
-                      onChange={handleChange}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                    >
-                      <option value="image">Image Ad</option>
-                      <option value="video">Video Ad</option>
-                      <option value="html">HTML Ad</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-400 mb-2">Creative URL</label>
-                    <input
-                      type="url"
-                      name="creativeUrl"
-                      value={formData.creativeUrl}
-                      onChange={handleChange}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                      placeholder="Enter creative material URL"
-                      required
-                    />
+                  {/* Fourth row - Target Audience and Locations */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-400 mb-2">Target Audience</label>
+                      <input
+                        type="text"
+                        name="targetAudience"
+                        value={formData.targetAudience}
+                        onChange={handleChange}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
+                        placeholder="Describe target audience"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-2">Locations</label>
+                      <input
+                        type="text"
+                        name="locations"
+                        value={formData.locations}
+                        onChange={handleChange}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
+                        placeholder="Enter target locations"
+                        required
+                      />
+                    </div>
                   </div>
                 </form>
               )}
@@ -240,6 +292,7 @@ export default function CreateAdModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleBack}
                   className="px-6 py-2 border border-gray-600 text-gray-400 rounded-lg hover:bg-gray-800 transition-colors"
+                  disabled={loading}
                 >
                   Back
                 </button>
@@ -248,6 +301,7 @@ export default function CreateAdModal({ isOpen, onClose }) {
                 type="button"
                 onClick={onClose}
                 className="px-6 py-2 border border-gray-600 text-gray-400 rounded-lg hover:bg-gray-800 transition-colors"
+                disabled={loading}
               >
                 Cancel
               </button>
@@ -256,7 +310,7 @@ export default function CreateAdModal({ isOpen, onClose }) {
                   type="button"
                   onClick={handleNext}
                   className={`hero-button ${!selectedType ? "opacity-50 cursor-not-allowed" : ""}`}
-                  disabled={!selectedType}
+                  disabled={!selectedType || loading}
                 >
                   Next
                 </button>
@@ -264,9 +318,10 @@ export default function CreateAdModal({ isOpen, onClose }) {
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="hero-button"
+                  className={`hero-button ${loading ? "opacity-50 cursor-wait" : ""}`}
+                  disabled={loading}
                 >
-                  Create Ad
+                  {loading ? "Creating..." : "Create Ad"}
                 </button>
               )}
             </div>

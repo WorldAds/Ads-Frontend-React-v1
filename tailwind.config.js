@@ -33,6 +33,31 @@ export default {
           900: '#831843',
           950: '#500724',
         },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
       spacing: {
         '18': '4.5rem',
@@ -49,15 +74,10 @@ export default {
         'xxs': '0.625rem',
       },
       borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
         '4xl': '2rem',
-      },
-      blur: {
-        'xs': '2px',
-      },
-      animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
       },
       keyframes: {
         float: {
@@ -68,6 +88,42 @@ export default {
           '0%': { opacity: 0.5 },
           '100%': { opacity: 1 },
         },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "slide-from-right": {
+          "0%": {
+            transform: "translateX(100%)",
+          },
+          "100%": {
+            transform: "translateX(0)",
+          },
+        },
+        "slide-to-right": {
+          "0%": {
+            transform: "translateX(0)",
+          },
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
+      },
+      animation: {
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "slide-from-right": "slide-from-right 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+        "slide-to-right": "slide-to-right 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+      },
+      blur: {
+        'xs': '2px',
       },
       backdropBlur: {
         xs: '2px',
@@ -101,6 +157,7 @@ export default {
         },
       }
       addUtilities(newUtilities)
-    }
+    },
+    require("tailwindcss-animate")
   ],
 }
